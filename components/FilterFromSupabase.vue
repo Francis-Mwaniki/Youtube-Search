@@ -14,13 +14,13 @@
           Python
         </button>
         <button
-          @click="searchCourses('datascience')"
+          @click="searchCourses('data science')"
           class="py-2 px-4 bg-blue-500 text-white rounded-md"
         >
           Data Science
         </button>
         <button
-          @click="searchCourses('artificialintelligence')"
+          @click="searchCourses('artificial intelligence')"
           class="py-2 px-4 bg-blue-500 text-white rounded-md"
         >
           Artificial Intelligence
