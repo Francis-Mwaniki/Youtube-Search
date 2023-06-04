@@ -39,7 +39,7 @@
 
     <Youtube />
     <!-- Hero -->
-    <div class="lg:w-1/2 flex-col flex gap-y-3 justify-center items-center mx-auto">
+    <div class="lg:w-1/2 flex-col flex gap-y-3 justify-center items-center mx-auto mb-6">
       <h2 class="text-3xl font-bold mb-4">What is collaborative Learning</h2>
       <p class="text-gray-600">
         Collaborative learning is an educational approach to teaching and learning that

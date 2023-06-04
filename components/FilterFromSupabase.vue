@@ -8,11 +8,7 @@
       </h1>
       <!-- just in time -->
     </div>
-    <Search
-      isSearching="isSearching"
-      searchTerm="searchTerm"
-      searchResults="searchResults"
-    />
+    <Search />
     <Loading v-if="loading" />
     <h1 class="text-2xl font-semibold mt-3">Search By Filtering</h1>
 
@@ -49,43 +45,39 @@
           TypeScript
         </button>
       </div>
-
-      <!-- <div v-if="searchResults.length" class="mt-4">
-        <div class="border border-gray-500 rounded-md">
-          <ul>
-            <li
-              v-for="result in searchResults"
-              :key="result.videoId"
-              class="flex items-center py-2 border-b border-gray-300"
-            >
-             
-              <iframe
-                width="200"
-                height="150"
-                :src="`https://www.youtube.com/embed/${result.videoId}`"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-                class="mr-2"
-              ></iframe>
-
-              <div>
-                <h3 class="text-lg font-semibold">{{ result.videoTitle }}</h3>
-                <p class="text-sm text-gray-600">{{ result.channelTitle }}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div> -->
-      <div
-        v-if="!isSearching && searchResults"
-        class="flex flex-col max-w-5xl mx-auto mt-4 bg-black rounded-md p-4"
-      >
+      <div class="flex flex-col max-w-5xl mx-auto mt-4 bg-black rounded-md p-4">
         <h2 class="text-lg font-bold mb-4 text-center mt-14 text-white">
-          Similar Videos
+          Learn from the best
         </h2>
+        <div v-if="searchResults.length" class="mt-4">
+          <div class="border border-gray-500 rounded-md">
+            <ul>
+              <li
+                v-for="result in searchResults"
+                :key="result.videoId"
+                class="flex items-center py-2 border-b border-gray-200 text-black bg-white"
+              >
+                <iframe
+                  width="200"
+                  height="150"
+                  :src="`https://www.youtube.com/embed/${result.videoId}`"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                  class="mr-2"
+                ></iframe>
 
-        <div class="grid grid-cols-5 gap-4 bg-white">
+                <div>
+                  <h3 class="text-lg font-semibold">{{ result.videoTitle }}</h3>
+                  <p class="text-sm text-gray-500">{{ result.channelTitle }}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="grid grid-cols-5 gap-4 bg-white">
           <div
             v-for="result in searchResults"
             :key="result.videoId"
@@ -104,8 +96,7 @@
               ></iframe>
             </div>
           </div>
-        </div>
-      </div>
+        </div> -->
     </div>
   </main>
 </template>
@@ -114,15 +105,15 @@
 import { ref } from "vue";
 
 export default {
-  props: ["isSearching", "searchTerm", "searchResults"],
+  // props: ["isSearching", "searchTerm", "searchResults"],
   setup(props) {
-    // const searchTerm = ref("");
+    const searchTerm = ref("");
     const loading = ref(false);
-    // const searchResults = ref([]);
+    const searchResults = ref([]);
 
     const client = useSupabaseClient();
 
-    /* async function searchCourses(query) {
+    async function searchCourses(query) {
       searchTerm.value = query;
 
       try {
@@ -145,14 +136,14 @@ export default {
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
-    } */
+    }
 
     return {
-      // searchTerm,
+      searchTerm,
       loading,
-      // searchResults,
+      searchResults,
       // searchCourses,
-      // searchCourses,
+      searchCourses,
       ...toRefs(props),
     };
   },
