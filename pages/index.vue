@@ -21,8 +21,17 @@
     </div>
   </div>
 
-  <div class="mb-9">
-    <Display />
+  <div class="bg-gray-100 py-16 mb-9">
+    <h2 class="text-lg font-bold mb-4 text-center mt-14 text-black">
+      OUR MOST LOVED COURSES
+    </h2>
+    <div
+      class="container mx-auto flex flex-col lg:flex-row items-center justify-center lg:justify-between"
+    >
+      <!-- v-for loop to render videos from supabase -->
+
+      <Display />
+    </div>
   </div>
 </template>
 
