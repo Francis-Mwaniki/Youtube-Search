@@ -7,7 +7,7 @@
         : 'bg-black p-4 '
     "
   >
-    <Loading v-if="Loading" class="inset-0 z-50" />
+    <Loading v-if="loading" class="inset-0 z-50" />
     <div
       class="flex flex-row justify-between mx-auto items-center max-w-5xl"
       :class="isSearching ? 'max-w-5xl mx-auto' : ''"
@@ -23,7 +23,7 @@
             ? 'top-1 max-w-5xl mx-auto inset-x-0 text-white fixed z-10 opacity-90 bg-black '
             : ''
         "
-        placeholder="Search"
+        placeholder="Looking for a course? Let's find it for you!"
       />
       <!-- cancel icon -->
       <button
@@ -53,103 +53,31 @@
         close
       </button>
     </div>
+    <!-- display videos -->
+    <div v-if="searchResults.length > 0" class="flex flex-col max-w-5xl mx-auto mt-4">
+      <h2 class="text-lg font-bold mb-4 text-center mt-14 text-white">Recommendation</h2>
 
-    <div v-if="searchResults.length" class="mt-8 overflow-y-auto max-w-6xl mx-auto">
-      <div class="border border-gray-300 rounded-md overflow-auto">
-        <ul>
-          <li
-            v-for="result in searchResults"
-            :key="result.videoId"
-            class="flex items-center py-2 border-b border-gray-300 overflow-auto"
-          >
-            <transition
-              name="popup"
-              mode="out-in"
-              class="fixed bottom-0 left-0 right-0 bg-gray-900 z-40 top-0 max-w-4xl mx-auto my-auto"
-              v-if="showVideo"
-            >
-              <div v-if="showVideo">
-                <div class="container mx-auto px-4 py-2">
-                  <div
-                    class="aspect-w-16 aspect-h-9 flex justify-center items-center flex-col"
-                  >
-                    <iframe
-                      width="200"
-                      height="150"
-                      :src="`https://www.youtube.com/embed/${result.videoId}`"
-                      frameborder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen
-                      class="py-64"
-                    ></iframe>
-                    <!-- not showing alert -->
-                    <div class="text-white">
-                      <p>Not showing? Sorry</p>
-                    </div>
+      <div class="grid grid-cols-5 gap-4 bg-white">
+        <!-- Recommendation -->
 
-                    <!-- youtube watch link -->
-
-                    <a
-                      :href="`https://www.youtube.com/watch?v=${result.videoId}`"
-                      target="_blank"
-                      class="text-white"
-                    >
-                      Watch on Youtube
-                    </a>
-
-                    <button
-                      @click="showVideo = false"
-                      class="text-white fixed z-10 bg-black bottom-4 inset-y-2 h-5 w-5"
-                    >
-                      <!-- icon for close -->
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-6 h-6 text-gray-600"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                      close
-                    </button>
-                  </div>
-                  <!-- close -->
-                </div>
-              </div>
-            </transition>
-            <div>
-              <h3 class="text-lg font-semibold text-white">{{ result.videoTitle }}</h3>
-              <p class="text-sm text-gray-200">{{ result.channelTitle }}</p>
-            </div>
-            <!-- <Icon name youtube -->
-            <button
-              @click="openVideo(result.videoId)"
-              class="flex items-center px-4 py-2 ml-auto text-gray-600"
-            >
-              <!-- icon for redirect -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 ml-auto text-gray-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </button>
-          </li>
-        </ul>
+        <div
+          v-for="result in searchResults"
+          :key="result.videoId"
+          class="flex flex-col justify-between items-center rounded-md p-2"
+        >
+          <div class="flex flex-col bg-black text-white">
+            <h3 class="text-lg font-bold">{{ result.video_name }}</h3>
+            <p class="text-gray-600">{{ result.channel_name }}</p>
+          </div>
+          <div class="aspect-w-16 aspect-h-9 mb-2">
+            <iframe
+              :src="'https://www.youtube.com/embed/' + result.videoId"
+              frameborder="0"
+              allowfullscreen
+              class="w-full h-full"
+            ></iframe>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -190,14 +118,11 @@ export default {
     async function search() {
       if (searchTerm.value.length < 1) {
         searchResults.value = [];
-        searchTerm.value = "";
         return;
       }
-      if (searchTerm.value.length == "") {
-        searchResults.value = [];
-        searchTerm.value = "";
-        return;
-      }
+
+      isSearching.value = true;
+      loading.value = true;
 
       try {
         const { data, error } = await client
@@ -212,15 +137,23 @@ export default {
           console.log(data);
           searchResults.value = data.map((item) => ({
             videoId: item.video_id,
-            videoTitle: item.video_name,
-            channelTitle: item.channel_name,
+            videoName: item.video_name,
+            channelName: item.channel_name,
             thumbnailUrl: item.thumbnail_url,
           }));
         }
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
+
+      loading.value = false;
+      setTimeout(() => {
+        isSearching.value = false;
+      }, 3000);
     }
+
+    // Watch for changes in the search term and trigger the search function
+    watch(searchTerm, search);
 
     return {
       searchTerm,

@@ -1,5 +1,16 @@
 <template>
   <div>
+    <nav class="bg-black py-4 shadow fixed inset-x-0 top-0 mb-4">
+      <ul class="flex justify-center items-center mx-auto gap-x-2">
+        <li class="inline-block">
+          <NuxtLink class="text-white px-4 py-2" to="/">Home</NuxtLink>
+        </li>
+
+        <li class="inline-block">
+          <NuxtLink class="text-white px-4 py-2" to="Dashboard">Dashboard</NuxtLink>
+        </li>
+      </ul>
+    </nav>
     <!-- Header -->
     <div class="bg-black py-4">
       <div class="container mx-auto flex justify-between items-center flex-row mt-12">
@@ -28,31 +39,30 @@
 
     <Youtube />
     <!-- Hero -->
+    <div class="lg:w-1/2 flex-col flex gap-y-3 justify-center items-center mx-auto">
+      <h2 class="text-3xl font-bold mb-4">What is collaborative Learning</h2>
+      <p class="text-gray-600">
+        Collaborative learning is an educational approach to teaching and learning that
+        involves groups of learners working together to solve a problem, complete a task,
+        or create a product. It is based on the idea that learning is a naturally social
+        act in which the participants talk among themselves.
+      </p>
+      <a
+        href="#"
+        class="bg-black text-white py-2 px-4 rounded hover:bg-black mt-4 flex justify-center justify-self-center items-center mx-auto"
+        >Learn More</a
+      >
+    </div>
     <div class="bg-gray-100 py-16">
+      <h2 class="text-lg font-bold mb-4 text-center mt-14 text-black">
+        OUR MOST LOVED COURSES
+      </h2>
       <div
         class="container mx-auto flex flex-col lg:flex-row items-center justify-center lg:justify-between"
       >
-        <div class="lg:w-1/2 flex-col flex gap-y-3 justify-center items-center mx-auto">
-          <h2 class="text-3xl font-bold mb-4">What is Machine Learning?</h2>
-          <p class="text-gray-600">
-            Machine learning is a method of teaching computers to learn from data, without
-            being explicitly programmed. It is a subset of artificial intelligence that
-            focuses on building algorithms that can make predictions or decisions based on
-            input data.
-          </p>
-          <a
-            href="#"
-            class="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 mt-4 flex justify-center justify-self-center items-center mx-auto"
-            >Learn More</a
-          >
-        </div>
-        <div class="lg:w-1/2">
-          <img
-            src="https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=600"
-            alt="Machine Learning"
-            class="rounded-lg shadow-lg"
-          />
-        </div>
+        <!-- v-for loop to render videos from supabase -->
+
+        <Display />
       </div>
     </div>
   </div>

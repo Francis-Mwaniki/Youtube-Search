@@ -1,31 +1,45 @@
 <template>
-  <div class="mt-6 py-3 m-auto">
-    <!-- login form using  tailwindcss -->
+  <div class="py-3 m-auto mt-6">
+    <!-- navbar  with Dashboard-->
 
-    <div class="max-w-md mx-auto my-4 p-4 bg-white rounded-md shadow-md">
+    <div class="w-1/2 mx-auto">
       <!-- success alert -->
-      <div class="mb-4" v-if="success">
+      <div class="mb-4 max-w-sm mx-auto" v-if="success">
         <div
           class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
           role="alert"
         >
-          <strong class="font-bold">Success! </strong>
+          <strong class="font-bold">Success!</strong>
           <span class="block sm:inline">{{ success }}.</span>
         </div>
       </div>
       <!-- error alert -->
-      <div class="mb-4" v-if="errMsg">
+      <div class="mb-4 max-w-sm mx-auto" v-if="errMsg">
         <div
           class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
           role="alert"
         >
-          <strong class="font-bold">Error! </strong>
+          <strong class="font-bold">Error!</strong>
           <span class="block sm:inline">{{ errMsg }}.</span>
         </div>
       </div>
-      <h2 class="text-xl font-medium mb-4">login</h2>
+    </div>
+    <!-- approval alert -->
+    <div class="mb-4 max-w-sm mx-auto" v-if="approval">
+      <div
+        class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative"
+        role="alert"
+      >
+        <strong class="font-bold">Approval!</strong>
+        <span class="block sm:inline">{{ approval }}.</span>
+      </div>
+    </div>
+
+    <!-- register form using  tailwindcss -->
+    <div class="max-w-md mx-auto my-4 p-4 bg-white rounded-md shadow-md">
+      <h2 class="text-xl font-medium mb-4">Register</h2>
       <Loading v-if="loading" />
-      <form @submit.prevent="login">
+      <form @submit.prevent="register">
         <div class="mb-4">
           <label class="block text-gray-700 font-medium mb-2" for="email"> Email </label>
           <input
@@ -64,7 +78,7 @@
           class="bg-black hover:bg-black text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           type="submit"
         >
-          login
+          Register
         </button>
       </form>
       <!-- continue github  button-->
@@ -76,8 +90,8 @@
       <!-- signup with github -->
       <div class="flex items-center mt-4">
         <button
-          class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-800 border border-transparent rounded-lg active:bg-gray-800 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
           @click="loginWithGithub"
+          class="flex items-center justify-center w-full px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-gray-800 border border-transparent rounded-lg active:bg-gray-800 hover:bg-gray-700 focus:outline-none focus:shadow-outline-gray"
         >
           <svg
             class="w-4 h-4 mr-3"
@@ -91,12 +105,13 @@
               clip-rule="evenodd"
             ></path>
           </svg>
-          <span>Sign in with GitHub</span>
+          <span>Sign up with GitHub</span>
         </button>
+        <!-- already have an account -->
       </div>
       <p class="mt-4 text-gray-800">
-        Don't have an account?
-        <NuxtLink to="/" class="text-gray-800 hover:underline"> Sign up </NuxtLink>
+        Already have an account?
+        <NuxtLink to="Login" class="text-gray-800 hover:underline"> Sign in </NuxtLink>
       </p>
     </div>
   </div>
@@ -105,15 +120,16 @@
 <script setup>
 import { ref } from "vue";
 const auth = useSupabaseAuthClient();
+const router = useRouter();
 let email = ref("");
 let password = ref("");
 let passwordConfirm = ref("");
-const router = useRouter();
 let errMsg = ref(null);
 let loading = ref(false);
 let success = ref("");
+let approval = ref("");
 
-const login = async () => {
+const register = async () => {
   if (password.value !== passwordConfirm.value) {
     errMsg.value = "Passwords do not match";
     return;
@@ -121,28 +137,29 @@ const login = async () => {
   try {
     loading.value = true;
     errMsg.value = null;
-    const { data, error } = await auth.auth.signInWithPassword({
+    const { user, error } = await auth.auth.signUp({
       email: email.value,
       password: password.value,
     });
     if (error) {
       loading.value = false;
-      errMsg.value = "Invalid email or password";
-    }
-    if (data) {
-      success.value = `Welcome ${data.user.email?.split("@")[0]}`;
+      errMsg.value = error.message;
+    } else {
+      success.value = "Registration successful";
+      approval.value = "Please check your email for approval";
       setTimeout(() => {
         loading.value = false;
       }, 3000);
       email.value = "";
       password.value = "";
       passwordConfirm.value = "";
-      window.location.href = "/Dashboard";
-      router.push("/Dashboard");
+      setTimeout(() => {
+        router.push("/Login");
+      }, 3000);
     }
   } catch (err) {
     loading.value = false;
-    errMsg.value = "Invalid email or password";
+    errMsg.value = err.message;
   }
 };
 /* signin with github */
@@ -159,7 +176,7 @@ const loginWithGithub = async () => {
     email.value = "";
     password.value = "";
     passwordConfirm.value = "";
-    router.push("/Dashboard");
+    router.push("Dashboard");
   }
 };
 </script>
