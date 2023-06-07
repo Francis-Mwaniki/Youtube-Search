@@ -65,9 +65,9 @@
           :key="result.videoId"
           class="flex flex-col justify-between items-center rounded-md p-2"
         >
-          <div class="flex flex-col bg-black text-white">
-            <h3 class="text-lg font-bold">{{ result.video_name }}</h3>
-            <p class="text-gray-600">{{ result.channel_name }}</p>
+          <div class="flex flex-col bg-black">
+            <h3 class="text-lg font-bold text-blue-600">{{ result.video_name }}</h3>
+            <p class="text-blue-600">{{ result.channel_name }}</p>
           </div>
           <div class="aspect-w-16 aspect-h-9 mb-2">
             <iframe
